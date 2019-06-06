@@ -30,10 +30,12 @@ def special(str):
     return (begin, end)
 
 
-def vector_intersect(vector, invert):
-    arr = np.arange(1, len(vector), 1)
+def vector_intersect(vector, invert, Number_files):
+    arr = np.arange(1, Number_files, 1)
+    print(len(vector))
     for index in range(len(vector)):
         if vector[index] != 0:
+            print(invert[index])
             arr = np.intersect1d(np.array(arr), np.array(invert[index]))
     return arr
 
@@ -101,8 +103,10 @@ def query_decode(search_query, vectors_file, voc, inverted):
     spe = special(search_query)
     vector_query = Text2vector(search_query, voc)
     if spe[0] != None and spe[1] != None:
+        print(search_query[spe[0]: spe[1]])
         vector = Text2vector(search_query[spe[0]: spe[1]], voc)
-        plus = vector_intersect(vector, inverted)
+        plus = vector_intersect(vector, inverted, len(vectors_file))
+        print(plus)
         if search_query[spe[0] - 2] == '-':
             plus = negate(plus, len(vectors_file))
     else:
@@ -118,7 +122,7 @@ if __name__ == '__main__':
     voc = [i.strip() for i in f.readlines()]
     f.close()
 
-    filenames, vectorfiles, invert = i2v.load_name_vector_invert()
+    filenames, vectorfiles, invert = i2v.load_name_vector_invert(thresh=0.5)
     vectorfiles = np.array(vectorfiles)
     n_voc, n_files = len(voc), len(filenames)
     print(n_voc, n_files)
