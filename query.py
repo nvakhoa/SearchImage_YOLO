@@ -90,25 +90,11 @@ def distance(vector_query, vectors_file, listID):
 
 
 def Text2vector(search_query, voc):
+    vector_query = np.zeros(len(voc), dtype=np.int)
     for index in range(len(voc)):
         if voc[index] in search_query:
-            search_query = search_query.replace(voc[index], str(index))
-    list_query = search_query.split()
-    vector_query = np.zeros(len(voc), dtype=np.int)
-    for i in list_query:
-        vector_query[int(i)] += 1
+            vector_query[index] = search_query.count(voc[index])
     return vector_query
-
-
-def test(search_query,vectors_file, voc ):
-    vector_query = Text2vector(search_query, voc)
-    Norm2 = dict()
-    for i in range(len(vectors_file)):
-        Norm2[i] = np.linalg.norm(vector_query - vectors_file[i])
-
-    Norm2 = sorted(Norm2, key=Norm2.get)
-    #for i in Norm2: print(i, vectors_file[i])
-    return Norm2
 
 
 def query_decode(search_query, vectors_file, voc, inverted):
